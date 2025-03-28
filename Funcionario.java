@@ -1,7 +1,3 @@
-
-import java.awt.Button;
-
-
 public abstract class Funcionario {
     
    private String nome;
@@ -39,8 +35,4 @@ public abstract class Funcionario {
        return this.matricula;
    }
    
- 
-           
-           
-
 }

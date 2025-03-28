@@ -17,12 +17,20 @@ public class Principal {
         m2 = new Medicamento("Buscopam","Eurofarma",15.00);
         m3 = new Medicamento("Resfenol","Hertz",20.19);
         
-        Double valorFinal = m1.getValor() + m2.getValor() + m3.getValor();
+        Cliente cliente = new Cliente("Jonas");
+        cliente.getCarrinho().adicionarItem(m3);
+        cliente.getCarrinho().adicionarItem(m2);
+        
+        cliente.getCarrinho().comprar(f1);
+        
+/*        Double valorFinal = m1.getValor() + m2.getValor() + m3.getValor();
         System.out.println("Valor a pagar sem desconto : " + valorFinal);
         
         valorFinal = m1.getValor() + m2.getValor() + m3.aplicarDesconto(10.0);
         System.out.println("Valor a pagar com desconto "
-                + "no resfenol: " + valorFinal);
+                + "no resfenol: " + valorFinal); */
+
+        
        
     }
     
