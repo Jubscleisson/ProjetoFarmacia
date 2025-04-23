@@ -49,5 +49,4 @@ public class Cliente {
         
         this.cpf = cpfNumerico;
     }
-
 }

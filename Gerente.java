@@ -1,4 +1,3 @@
-
 public class Gerente extends Caixa implements Descontavel {
     
     public Gerente() {
@@ -18,6 +17,14 @@ public class Gerente extends Caixa implements Descontavel {
         this.setSalario(salario);
     }
     
+    public Caixa cadastrarCaixa(String nome, String matricula, Float salario) {
+        Caixa caixa = new Caixa();
+        caixa.setNome(nome);
+        caixa.setMatricula(matricula);
+        caixa.setSalario(salario);
+        return caixa;
+    }
+
     public void cancelarCompra() {
         System.out.println("Compra cancelada");
     }

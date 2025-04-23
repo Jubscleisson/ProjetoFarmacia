@@ -1,5 +1,5 @@
 public abstract class Funcionario {
-    private static int nextId = 2;
+    private static int nextId = 1;
     private int id;
     private String nome;
     private String matricula;
@@ -29,9 +29,7 @@ public abstract class Funcionario {
     }
    
    public void setNome(String n){
-       
-       this.nome = n;
-     
+        this.nome = n; 
    }
       
    public void setMatricula(String mat){

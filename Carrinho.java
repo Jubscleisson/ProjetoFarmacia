@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
 
 public class Carrinho {
     private Cliente cliente;
@@ -10,6 +13,13 @@ public class Carrinho {
         this.itens = new HashMap<>();
     }
     
+    private Medicamento encontrarMedicamentoPorId(String id, List<Medicamento> medicamentosDisponiveis) {
+        return medicamentosDisponiveis.stream()
+            .filter(m -> m.getId().equals(id))
+            .findFirst()
+            .orElse(null);
+    }
+
     public void adicionarItem(Medicamento medicamento, int quantidade) {
         if (quantidade <= 0) {
             throw new IllegalArgumentException("Quantidade deve ser maior que zero");
@@ -49,48 +59,55 @@ public class Carrinho {
         }
         System.out.printf("\nTotal: R$ %.2f\n", total);
     }
-
-    public void comprar(Gerente gerente) {
-        if (itens.isEmpty()) {
-            System.out.println("O carrinho está vazio!");
-            return;
-        }
+    public void comprar(Gerente gerente, List<Medicamento> medicamentosDisponiveis) {
+    if (itens.isEmpty()) {
+        System.out.println("O carrinho está vazio!");
+        return;
+    }
+    
+    double total = 0;
+    List<Medicamento> itensVenda = new ArrayList<>();
+    System.out.println("Compra realizada por " + cliente.getNome() + ":");
+    
+    for (Map.Entry<Medicamento, Integer> entry : itens.entrySet()) {
+        Medicamento medicamento = entry.getKey();
+        int quantidade = entry.getValue();
         
-        double total = 0;
-        List<Medicamento> itensVenda = new ArrayList<>();
-        System.out.println("Compra realizada por " + cliente.getNome() + ":");
+        Medicamento medicamentoEstoque = encontrarMedicamentoPorId(medicamento.getId(), medicamentosDisponiveis);
         
-        for (Map.Entry<Medicamento, Integer> entry : itens.entrySet()) {
-            Medicamento medicamento = entry.getKey();
-            int quantidade = entry.getValue();
-            
-            try {
-                medicamento.reduzirEstoque(quantidade);
-                double valorUnitario = medicamento.getValor();
-                double valorTotal = valorUnitario * quantidade;
-                
-                System.out.printf(" - %s (x%d)\n", medicamento.getNome(), quantidade);
-                System.out.printf("   Valor unitário: R$ %.2f\n", valorUnitario);
-                System.out.printf("   Subtotal: R$ %.2f\n", valorTotal);
-                
-                total += valorTotal;
-                itensVenda.add(medicamento);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Erro ao processar " + medicamento.getNome() + ": " + e.getMessage());
+        try {
+            if (medicamentoEstoque != null) {
+                medicamentoEstoque.reduzirEstoque(quantidade); // Reduzir do estoque
+            } else {
+                System.out.println("Medicamento não encontrado no estoque.");
                 return;
             }
-        }
-
-        Double desconto = gerente.aplicarDesconto(10.0);
-        if (desconto > 0) {
-            double valorDesconto = (total * desconto) / 100;
-            total -= valorDesconto;
-            System.out.printf("Desconto aplicado: R$ %.2f\n", valorDesconto);
-        }
             
-        System.out.printf("Total final: R$ %.2f\n", total);
+            double valorUnitario = medicamento.getValor();
+            double valorTotal = valorUnitario * quantidade;
+            
+            System.out.printf(" - %s (x%d)\n", medicamento.getNome(), quantidade);
+            System.out.printf("   Valor unitário: R$ %.2f\n", valorUnitario);
+            System.out.printf("   Subtotal: R$ %.2f\n", valorTotal);
+            
+            total += valorTotal;
+            itensVenda.add(medicamento);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao processar " + medicamento.getNome() + ": " + e.getMessage());
+            return;
+        }
+    }
+
+    Double desconto = gerente.aplicarDesconto(10.0);
+    if (desconto > 0) {
+        double valorDesconto = (total * desconto) / 100;
+        total -= valorDesconto;
+        System.out.printf("Desconto aplicado: R$ %.2f\n", valorDesconto);
+    }
         
-        Venda venda = new Venda(1, itensVenda, total, java.time.LocalDateTime.now(), gerente, cliente);
-        itens.clear();
+    System.out.printf("Total final: R$ %.2f\n", total);
+    
+    Venda venda = new Venda(1, itensVenda, total, java.time.LocalDateTime.now(), gerente, cliente);
+    itens.clear();
     }
 }

@@ -1,9 +1,8 @@
-
-
 public class Caixa extends Funcionario {
     
-    public Caixa(){
-        System.out.println("Criando objeto caixa");
+    public Cliente cadastrarCliente(String nome, String cpf) {
+        Cliente cliente = new Cliente(nome);
+        cliente.setCpf(cpf);
+        return cliente;
     }
-    
 }
